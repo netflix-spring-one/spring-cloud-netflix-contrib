@@ -18,6 +18,7 @@ package org.springframework.cloud.netflix.metrics.spectator;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.support.management.MetricsFactory;
@@ -28,6 +29,7 @@ import com.netflix.spectator.api.Registry;
  * @author Taylor Wicksell
  */
 @Configuration
+@ConditionalOnClass({ MetricsFactory.class, Registry.class })
 @ConditionalOnBean({ MetricsFactory.class, Registry.class })
 @AutoConfigureAfter(SpectatorAutoConfiguration.class)
 public class SpectatorIntegrationMetricsAutoConfiguration {

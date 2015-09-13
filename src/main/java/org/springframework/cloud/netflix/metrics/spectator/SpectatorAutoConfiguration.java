@@ -20,8 +20,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
 import org.springframework.boot.actuate.endpoint.MetricReaderPublicMetrics;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +34,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.netflix.servo.publish.MetricPoller;
 import com.netflix.servo.publish.MonitorRegistryMetricPoller;
 import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.sandbox.BucketTimer;
 import com.netflix.spectator.servo.ServoRegistry;
 
 /**
@@ -47,6 +48,7 @@ import com.netflix.spectator.servo.ServoRegistry;
  * @author Jon Schneider
  */
 @Configuration
+@ConditionalOnClass({Registry.class, BucketTimer.class})
 @AutoConfigureBefore(MetricRepositoryAutoConfiguration.class)
 public class SpectatorAutoConfiguration {
 	@Bean

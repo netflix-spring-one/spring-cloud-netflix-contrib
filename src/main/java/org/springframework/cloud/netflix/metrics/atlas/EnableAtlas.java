@@ -18,6 +18,8 @@ package org.springframework.cloud.netflix.metrics.atlas;
 
 import java.lang.annotation.*;
 
+import org.springframework.context.annotation.Import;
+
 /**
  * Annotation for clients to enable Atlas metrics publishing.
  */
@@ -25,5 +27,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+@Import(AtlasAutoConfiguration.class)
 public @interface EnableAtlas {
 }
