@@ -3,11 +3,13 @@ buildscript {
     dependencies {
         classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
         classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:latest.release'
+        classpath 'com.netflix.nebula:nebula-release-plugin:3.0.0'
         classpath 'com.netflix.nebula:gradle-netflixoss-project-plugin:3.1.0'
     }
 }
 
 apply plugin: 'groovy'
+apply plugin: 'nebula.nebula-release'
 apply plugin: 'nebula.netflixoss'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'optional-base'
