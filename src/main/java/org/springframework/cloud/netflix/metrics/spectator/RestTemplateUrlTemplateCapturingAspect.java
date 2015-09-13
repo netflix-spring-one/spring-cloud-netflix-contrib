@@ -19,11 +19,16 @@ package org.springframework.cloud.netflix.metrics.spectator;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.web.client.RestOperations;
 
 /**
  * Captures the still-templated URI because currently the ClientHttpRequestInterceptor only gives us the means to
  * retrieve the substituted URI.
+ * 
+ * Requires @EnableAspectJAutoProxy(proxyTargetClass = true) or spring.aop.proxy-target-class=true to wrap
+ * RestTemplate. Otherwise it will only take effect when injecting {@link RestOperations}
  *
+ * @author Taylor Wicksell
  * @author Jon Schneider
  */
 @Aspect

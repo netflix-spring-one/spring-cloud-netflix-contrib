@@ -91,7 +91,7 @@ public class SpectatorAutoConfiguration {
 	}
 
 	@Configuration
-	@ConditionalOnBean({ RestTemplate.class, AopAutoConfiguration.CglibAutoProxyConfiguration.class })
+	@ConditionalOnBean({RestTemplate.class})
 	static class SpectatorRestTemplateConfiguration {
 		@Bean
 		RestTemplateUrlTemplateCapturingAspect restTemplateUrlTemplateCapturingAspect() {
