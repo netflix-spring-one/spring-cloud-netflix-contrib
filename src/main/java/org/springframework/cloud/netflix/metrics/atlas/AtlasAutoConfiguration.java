@@ -19,19 +19,18 @@ package org.springframework.cloud.netflix.metrics.atlas;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.metrics.export.Exporter;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.netflix.metrics.spectator.SpectatorAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.frigga.Names;
@@ -42,43 +41,29 @@ import com.netflix.servo.tag.BasicTagList;
 
 @Configuration
 @ConditionalOnClass(AtlasMetricObserver.class)
-@Import(SpectatorAutoConfiguration.class)
-public class AtlasAutoConfiguration implements ServoAtlasConfig {
-    @Autowired(required = false)
-    private Collection<AtlasTagProvider> tagProviders;
-
-    @NotNull
-    @Value("${netflix.atlas.uri}")
-    private String uri;
-
-    @Value("${netflix.atlas.pushQueueSize:1000}")
-    private Integer pushQueueSize;
-
-    @Value("${netflix.atlas.enabled:true}")
-    private boolean enabled;
-
-    @Value("${netflix.atlas.batchSize:10000}")
-    private Integer batchSize;
-
+@EnableConfigurationProperties(AtlasProperties.class)
+@AutoConfigureAfter(SpectatorAutoConfiguration.class)
+public class AtlasAutoConfiguration {
+  
     @Bean
     @ConditionalOnMissingBean(AtlasMetricObserver.class)
-    public AtlasMetricObserver atlasObserver() {
+    public AtlasMetricObserver atlasObserver(Optional<Collection<AtlasTagProvider>> tagProviders, ServoAtlasConfig servoAtlasConfig) {
         BasicTagList tags = (BasicTagList) BasicTagList.EMPTY;
-        if(tagProviders != null) {
-            for (AtlasTagProvider tagProvider : tagProviders) {
+        if(tagProviders != null && tagProviders.isPresent()) {
+            for (AtlasTagProvider tagProvider : tagProviders.get()) {
                 for (Map.Entry<String, String> tag : tagProvider.defaultTags().entrySet()) {
                     if(tag.getValue() != null)
                         tags = tags.copy(tag.getKey(), tag.getValue());
                 }
             }
         }
-        return new AtlasMetricObserver(this, tags);
+        return new AtlasMetricObserver(servoAtlasConfig, tags);
     }
 
     @Bean
     @ConditionalOnMissingBean(Exporter.class)
-    public AtlasExporter exporter(AtlasMetricObserver observer, MetricPoller poller) {
-        return new AtlasExporter(observer, poller);
+    public AtlasExporter exporter(AtlasMetricObserver observer, MetricPoller poller, AtlasProperties properties) {
+        return new AtlasExporter(observer, poller, properties.getPublishDelay());
     }
 
     @Configuration
@@ -96,25 +81,5 @@ public class AtlasAutoConfiguration implements ServoAtlasConfig {
                 return tags;
             };
         }
-    }
-
-    @Override
-    public String getAtlasUri() {
-        return uri;
-    }
-
-    @Override
-    public int getPushQueueSize() {
-        return pushQueueSize;
-    }
-
-    @Override
-    public boolean shouldSendMetrics() {
-        return enabled;
-    }
-
-    @Override
-    public int batchSize() {
-        return batchSize;
     }
 }
