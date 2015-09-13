@@ -8,7 +8,7 @@ buildscript {
     }
 }
 
-apply plugin: 'groovy'
+apply plugin: 'java'
 apply plugin: 'nebula.nebula-release'
 apply plugin: 'nebula.netflixoss'
 apply plugin: 'io.spring.dependency-management'
@@ -46,13 +46,7 @@ dependencies {
 
   compile 'com.netflix.frigga:frigga:0.13'
 
+  testCompile 'junit:junit:latest.release'
   testCompile 'org.mockito:mockito-core'
-	testCompile 'org.springframework:spring-test'
-  testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
-  testCompile 'org.littleshoot:littleproxy:latest.release'
-  testCompile 'org.codehaus.groovy:groovy:latest.release'
-}
-
-configurations.all {
-    exclude module: 'groovy-all'
+  testCompile 'org.springframework:spring-test'
 }
