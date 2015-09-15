@@ -57,7 +57,7 @@ public class EurekaApplicationEventAutoConfigurationTests {
                 .thenReturn(InstanceInfo.InstanceStatus.UP)
                 .thenReturn(InstanceInfo.InstanceStatus.DOWN);
 
-        listener.latch.await(50, TimeUnit.MILLISECONDS);
+        listener.latch.await(1000, TimeUnit.MILLISECONDS);
         assertEquals(2, listener.latch.getCount());
     }
 }

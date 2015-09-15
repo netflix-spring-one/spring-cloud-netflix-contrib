@@ -25,6 +25,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.integration.support.context.NamedComponent;
 import org.springframework.integration.support.management.MessageChannelMetrics;
 import org.springframework.integration.support.management.MessageHandlerMetrics;
+import org.springframework.integration.support.management.QueueChannelManagement;
 import org.springframework.util.ReflectionUtils;
 
 import com.netflix.spectator.api.Id;
@@ -51,8 +52,13 @@ public class SpectatorIntegrationMetricsPostProcessor implements BeanPostProcess
 		if (bean instanceof MessageHandlerMetrics && bean instanceof NamedComponent) {
 			gatherMetrics(bean, MessageHandlerMetrics.class);
 		}
+		if (bean instanceof QueueChannelManagement && bean instanceof NamedComponent) {
+			gatherMetrics(bean, QueueChannelManagement.class);
+			return bean;
+		}
 		if (bean instanceof MessageChannelMetrics && bean instanceof NamedComponent) {
 			gatherMetrics(bean, MessageChannelMetrics.class);
+			return bean;
 		}
 		return bean;
 	}
